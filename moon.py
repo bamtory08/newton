@@ -6,15 +6,14 @@ WIDTH, HEIGHT = 800, 800
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Newton")
 
-WHITE = (255, 255, 255)
-YELLOW = (255, 255, 0)
 BLUE = (100, 149, 237)
+GRAY = (211, 211, 211)
 
 class Planet:
     AU = 149.6e6 * 1000
     G = 6.67428e-11
     SCALE = 100000 / AU #1AU = n pixels
-    TIMESTEP = 3600*24 #1day
+    TIMESTEP = 360*24 #1day
 
 
     def __init__(self, x, y, radius, color, mass):
@@ -25,8 +24,8 @@ class Planet:
         self.mass = mass
 
         self.orbit = []
-        self.sun = False
-        self.distance_to_sun = 0
+        self.earth = False
+        self.distance_to_earth = 0
         
         self.x_vel = 0
         self.y_vel = 0
@@ -52,8 +51,8 @@ class Planet:
         distance_y = other_y - self.y
         distance = math.sqrt(distance_x ** 2 + distance_y ** 2)
 
-        if other.sun:
-            self.distance_to_sun = distance
+        if other.earth:
+            self.distance_to_earth = distance
 
         force = self.G * self.mass * other.mass / distance**2 
         theta = math.atan2(distance_y, distance_x)
@@ -83,14 +82,16 @@ def main():
     run = True
     clock = pygame.time.Clock()
 
-    sun = Planet(0, 0, 30, YELLOW, 5.9722 * 10**24)
-    sun.sun = True #위에서 sun false라고 해서
+    #(x좌표, y좌표, 반지름, 색, 질량)
+    earth = Planet(0, 0, 30, BLUE, 5.9722 * 10**24)
+    earth.earth = True 
 
-    earth = Planet(-0.0026 * Planet.AU, 0, 16, BLUE, 7.347673 * 10**10)
-    earth.y_vel = 1.022 * 1000
+    moon = Planet(-0.0026 * Planet.AU, 0, 16, GRAY, 7.347673 * 10**10)
+    #달을 수평 방향으로 던지는 속도
+    moon.y_vel = 1.022 * 1000
     
 
-    planets = [sun, earth]
+    planets = [earth, moon]
 
     while run:
         clock.tick(60)
